@@ -64,14 +64,23 @@
     </div>
 </div>
 
+<div id="read" class="app-page">
+    <button class="back-btn" onclick="showMenu()">← GERİ</button>
+    <div class="card bg-dark p-4 border-secondary text-center">
+        <p class="text-muted">Barkod içerik okuma modülü manuel giriş içindir.</p>
+        <input type="text" class="form-control mb-3" placeholder="Sorgulanacak Kod">
+        <button class="btn btn-danger w-100">SORGULA</button>
+    </div>
+</div>
+
 <div id="calc" class="app-page">
     <button class="back-btn" onclick="showMenu()">← GERİ</button>
-    <div class="card bg-dark border-secondary p-4">
+    <div class="card bg-dark border-secondary p-4 text-center">
         <input type="number" id="d" class="form-control mb-2" placeholder="Çap">
         <input type="number" id="l" class="form-control mb-2" placeholder="Boy">
         <input type="number" id="w" class="form-control mb-3" placeholder="Ağırlık">
         <button onclick="calcSteel()" class="btn btn-danger w-100">HESAPLA</button>
-        <div id="res" class="mt-4 text-center h1 text-danger"></div>
+        <div id="res" class="mt-4 h1 text-danger"></div>
     </div>
 </div>
 
@@ -117,30 +126,15 @@
         let v = document.getElementById('ictasIn').value; 
         document.getElementById('ictasOut').innerHTML = ""; 
         new QRCode(document.getElementById('ictasOut'), {
-            text: v,
-            width: 200,
-            height: 200,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+            text: v, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H
         }); 
     }
     
     function genIdris() { 
         let v = document.getElementById('idrisIn').value; 
-        try {
-            bwipjs.toCanvas('idrisOut', {
-                bcid: 'pdf417',
-                text: v,
-                scale: 3,
-                height: 12,
-                includetext: true,
-                textxalign: 'center',
-                backgroundcolor: 'ffffff' 
-            });
-        } catch (e) {
-            console.error(e);
-        }
+        bwipjs.toCanvas('idrisOut', {
+            bcid: 'pdf417', text: v, scale: 3, height: 12, includetext: true, textxalign: 'center', backgroundcolor: 'ffffff'
+        });
     }
 
     // Copyrigh Harun Camuzcu
