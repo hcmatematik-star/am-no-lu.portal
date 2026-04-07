@@ -32,8 +32,7 @@
 <div id="codeEditor">
     <div class="bg-dark p-2 d-flex justify-content-between border-bottom border-secondary">
         <span class="text-muted small">index.html - Source</span>
-        <button class="btn btn-sm btn-success" onclick="save()">SAVE</button>
-    </div>
+        </div>
     <textarea id="rawArea" spellcheck="false"></textarea>
 </div>
 
@@ -108,12 +107,7 @@
     function genIctas() { let v = document.getElementById('ictasIn').value; document.getElementById('ictasOut').innerHTML = ""; new QRCode(document.getElementById('ictasOut'), v); }
     function genIdris() { let v = document.getElementById('idrisIn').value; bwipjs.toCanvas('idrisOut', { bcid: 'pdf417', text: v, scale: 3, height: 12 }); }
 
-    function save() {
-        if(prompt("Şifre:") === "5ZKIx70i") {
-            alert("Sistem güncellendi.");
-            location.reload();
-        }
-    }
+    
     // Copyrigh Harun Camuzcu
 </script>
 </body>
