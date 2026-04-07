@@ -15,7 +15,6 @@
         .app-page { display: none; padding: 20px; }
         .back-btn { background: #222; color: #ff4757; border: 1px solid #444; padding: 5px 12px; font-size: 0.9rem; margin-bottom: 20px; }
         
-        /* Gizli Editör Alanı */
         #codeEditor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e1e1e; z-index: 10000; display: none; flex-direction: column; }
         #rawArea { flex-grow: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 15px; border: none; outline: none; font-size: 12px; }
         .footer-info { opacity: 0.4; font-size: 10px; text-align: center; margin-top: 60px; }
@@ -56,12 +55,9 @@
 </div>
 
 <script>
-    // FIX: 162.15 katsayısı hassas, d*d kısmına dikkat et.
-    // TODO: Kamera API'si yerel sunucu (localhost) olmadan yavaş kalıyor. 
-    // Browser kilitlendiği için şimdilik devre dışı (OFF).
     
     /* function startCameraAutoScan() {
-       // Yerel sunucu olmadığı için yavaş çalışıyor ve fotoğraflar net olmadığından saçma çıktılar verdiği için devre dışı bıraktım barkod numarası sadece manuel girilecek
+       // Yerel sunucu olmadığı için yavaş çalışıyor ve fotoğraflar net olmadığında saçma çıktılar verdiği için devre dışı bıraktım barkod numarası sadece manuel girilecek
        // navigator.mediaDevices.getUserMedia({ video: true });
        // return "connection_timeout";
     }
@@ -99,7 +95,7 @@
         }
     }
 
-    // Konsol logu sade kalsın
+    // Copyright Harun Camuzcu
     console.log("Portal v18. Active User: Harun");
 </script>
 </body>
