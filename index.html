@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         body { background: #0d0d0d; color: #eee; font-family: sans-serif; margin: 0; }
         .main-header { color: #ff4757; font-weight: 900; font-size: 2.2rem; cursor: pointer; text-align: center; margin-top: 50px; user-select: none; }
@@ -17,12 +18,9 @@
         #rawArea { flex-grow: 1; background: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 15px; border: none; outline: none; font-size: 11px; }
         
         #idrisOut, #ictasOut img { 
-            background: white !important; 
-            padding: 10px; 
-            border-radius: 4px; 
-            display: block; 
-            margin: 0 auto;
+            background: white !important; padding: 10px; border-radius: 4px; display: block; margin: 0 auto;
         }
+        #reader { width: 100%; background: #111; border-radius: 8px; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -44,6 +42,15 @@
     <textarea id="rawArea" spellcheck="false"></textarea>
 </div>
 
+<div id="read" class="app-page">
+    <button class="back-btn" onclick="stopScanner()">← GERİ</button>
+    <div class="card bg-dark p-3 border-secondary text-center">
+        <div id="reader"></div>
+        <div id="readResult" class="mt-3 text-start small text-info" style="word-break: break-all;"></div>
+        <button class="btn btn-danger mt-3 w-100" onclick="startScanner()">TARAMAYI BAŞLAT</button>
+    </div>
+</div>
+
 <div id="ictas" class="app-page">
     <button class="back-btn" onclick="showMenu()">← GERİ</button>
     <div class="card bg-dark p-4 border-secondary text-center">
@@ -58,18 +65,7 @@
     <div class="card bg-dark p-4 border-secondary text-center">
         <input type="text" id="idrisIn" class="form-control mb-3" placeholder="Barkod Numarası Girin">
         <button class="btn btn-danger w-100" onclick="genIdris()">PDF417 ÜRET</button>
-        <div class="mt-4" style="overflow-x: auto;">
-            <canvas id="idrisOut"></canvas>
-        </div>
-    </div>
-</div>
-
-<div id="read" class="app-page">
-    <button class="back-btn" onclick="showMenu()">← GERİ</button>
-    <div class="card bg-dark p-4 border-secondary text-center">
-        <p class="text-muted">Barkod içerik okuma modülü manuel giriş içindir.</p>
-        <input type="text" class="form-control mb-3" placeholder="Sorgulanacak Kod">
-        <button class="btn btn-danger w-100">SORGULA</button>
+        <div class="mt-4" style="overflow-x: auto;"><canvas id="idrisOut"></canvas></div>
     </div>
 </div>
 
@@ -85,18 +81,25 @@
 </div>
 
 <script>
-    /* yerel sunucu olmadığı için yavaş çalışıyor ve fotoğraflar net olmadığında saçma çıktılar verdiği için devre dışı bıraktım. barkod numaraları sadece manuel girilecek.
-    
-    function initCameraSystem() {
-        const scanner = new Html5Qrcode("reader");
-        scanner.start({ facingMode: "environment" }, { fps: 10 }, (decodedText) => {
-            document.getElementById('ictasIn').value = decodedText;
-        }).catch(err => console.error("Kamera başlatılamadı:", err));
+    /* yerel sunucu olmadığı için yavaş çalışıyor ve fotoğraflar net olmadığında saçma çıktılar verdiği için devre dışı bıraktım. barkod numaraları sadece manuel girilecek. */
+
+    let html5QrCode;
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
+            (decodedText) => {
+                // Burada o bahsettiğin Çap, Boy, Kalite parçalama işlemi yapılacak
+                document.getElementById('readResult').innerHTML = "<b>İÇERİK:</b><br>" + decodedText;
+                // Veriyi çekip ekrana gösterme mantığı buraya gelecek
+            }
+        ).catch(err => alert("Kamera hatası: " + err));
     }
 
-    function processGalleryImage(file) {
-        // Tesseract.recognize(file).then(({ data: { text } }) => { console.log(text); });
-    } */
+    function stopScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => { showMenu(); }).catch(() => { showMenu(); });
+        } else { showMenu(); }
+    }
 
     let clicks = 0;
     function triggerMagic() {
@@ -117,24 +120,17 @@
 
     function calcSteel() {
         let cap = parseFloat(document.getElementById('d').value), boy = parseFloat(document.getElementById('l').value), kg = parseFloat(document.getElementById('w').value);
-        if(cap && boy && kg) {
-            document.getElementById('res').innerText = Math.floor(kg / (boy * ((cap * cap) / 162.15))) + " ADET";
-        }
+        if(cap && boy && kg) { document.getElementById('res').innerText = Math.floor(kg / (boy * ((cap * cap) / 162.15))) + " ADET"; }
     }
 
     function genIctas() { 
-        let v = document.getElementById('ictasIn').value; 
-        document.getElementById('ictasOut').innerHTML = ""; 
-        new QRCode(document.getElementById('ictasOut'), {
-            text: v, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H
-        }); 
+        let v = document.getElementById('ictasIn').value; document.getElementById('ictasOut').innerHTML = ""; 
+        new QRCode(document.getElementById('ictasOut'), { text: v, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H }); 
     }
     
     function genIdris() { 
         let v = document.getElementById('idrisIn').value; 
-        bwipjs.toCanvas('idrisOut', {
-            bcid: 'pdf417', text: v, scale: 3, height: 12, includetext: true, textxalign: 'center', backgroundcolor: 'ffffff'
-        });
+        bwipjs.toCanvas('idrisOut', { bcid: 'pdf417', text: v, scale: 3, height: 12, includetext: true, textxalign: 'center', backgroundcolor: 'ffffff' });
     }
 
     // Copyrigh Harun Camuzcu
