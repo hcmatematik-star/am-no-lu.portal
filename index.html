@@ -3,129 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amınoğlu Metal Portal v4</title>
+    <title>Amınoğlu Metal Portal v5</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
-        body { background-color: #0f0f0f; color: white; font-family: 'Segoe UI', sans-serif; }
-        .menu-card { background: linear-gradient(145deg, #1e1e1e, #141414); border: 1px solid #333; border-radius: 20px; transition: 0.3s; cursor: pointer; padding: 30px; text-align: center; height: 100%; }
-        .menu-card:hover { transform: translateY(-5px); border-color: #ff4757; box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2); }
-        .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
-        .app-page { display: none; padding-top: 20px; }
-        .back-btn { background: #333; color: white; border: none; padding: 8px 15px; border-radius: 10px; margin-bottom: 20px; }
-        .btn-main { background: #ff4757; color: white; border: none; padding: 15px; border-radius: 15px; font-weight: bold; width: 100%; font-size: 1.1rem; }
-        .form-control-custom { background: white !important; color: black !important; border-radius: 12px; padding: 15px; font-size: 1.2rem; font-weight: bold; border: 2px solid #ff4757; }
-        .barcode-area { background: white; padding: 20px; border-radius: 15px; display: inline-block; margin-top: 20px; }
-        #reader { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
+        body { background-color: #0d0d0d; color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+        .menu-card { background: #1a1a1a; border: 2px solid #333; border-radius: 25px; transition: 0.3s; cursor: pointer; padding: 40px 20px; text-align: center; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .menu-card:hover { border-color: #ff4757; transform: scale(1.03); background: #222; }
+        .icon-box { font-size: 3.5rem; margin-bottom: 15px; }
+        .app-page { display: none; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .back-btn { background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 12px; margin-bottom: 20px; font-weight: bold; }
+        .form-control-custom { background: white !important; color: black !important; border: 3px solid #ff4757; border-radius: 15px; padding: 15px; font-size: 1.3rem; font-weight: 800; text-align: center; }
+        .btn-action { background: #ff4757; color: white; border: none; padding: 18px; border-radius: 15px; font-weight: bold; width: 100%; font-size: 1.2rem; }
+        .barcode-area { background: white; padding: 25px; border-radius: 20px; display: inline-block; margin-top: 20px; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        #reader { width: 100%; border-radius: 20px; overflow: hidden; border: 2px solid #ff4757; display: none; }
+        .loading-text { display: none; color: #ff4757; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container py-4">
+<div class="container py-5">
     <div id="mainMenu">
-        <h2 class="text-center mb-5" style="color: #ff4757; font-weight: 800;">AMINOĞLU METAL PORTAL</h2>
+        <h1 class="text-center mb-5" style="color: #ff4757; font-weight: 900; letter-spacing: -1px;">AMINOĞLU PORTAL</h1>
         <div class="row g-4">
-            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('app1')"><span class="icon">🔳</span>İçtaş QR Türet</div></div>
-            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('app2')"><span class="icon">🚥</span>İdris PDF417</div></div>
-            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('app3')"><span class="icon">🔍</span>Barkod Oku</div></div>
-            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('app4')"><span class="icon">🧮</span>Adet Hesapla</div></div>
+            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('ictasPage')"><div class="icon-box">🔳</div><h5 class="fw-bold">İçtaş Barkod</h5></div></div>
+            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('idrisPage')"><div class="icon-box">📊</div><h5 class="fw-bold">İdis Barkod</h5></div></div>
+            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('readPage')"><div class="icon-box">🔍</div><h5 class="fw-bold">Barkod İçerik</h5></div></div>
+            <div class="col-6 col-md-3"><div class="menu-card" onclick="openApp('calcPage')"><div class="icon-box">🏗️</div><h5 class="fw-bold">Çubuk Sayısı</h5></div></div>
         </div>
     </div>
 
-    <div id="app1" class="app-page">
+    <div id="ictasPage" class="app-page">
         <button class="back-btn" onclick="showMenu()">← Ana Menü</button>
-        <div class="card bg-dark p-4 border-secondary">
-            <h4 class="text-center mb-4">İçtaş QR Oluşturucu</h4>
-            <input type="text" id="ictasInput" class="form-control form-control-custom mb-3" placeholder="Numarayı buraya yapıştır">
-            <button onclick="makeQR()" class="btn btn-main">KAREKOD ÜRET 🚀</button>
-            <div id="qrRes" class="text-center mt-3" style="display:none;"><div id="qrcode" class="barcode-area"></div></div>
+        <div class="card bg-dark p-4 border-0">
+            <h3 class="text-center mb-4 text-white">İçtaş Barkod Üret</h3>
+            <div class="mb-4 text-center">
+                <label class="btn btn-outline-light w-100 p-3 mb-2">📸 Fotoğraftan Numarayı Oku <input type="file" accept="image/*" onchange="readOCR(this, 'ictasInput')" hidden></label>
+                <div id="loading_ictasInput" class="loading-text">Numara okunuyor, bekleyin...</div>
+            </div>
+            <input type="text" id="ictasInput" class="form-control form-control-custom mb-3" placeholder="Numarayı Yazın">
+            <button onclick="genQR()" class="btn btn-action">QR OLUŞTUR 🚀</button>
+            <div id="qrOut" class="text-center mt-3" style="display:none;"><div class="barcode-area" id="qrcode"></div></div>
         </div>
     </div>
 
-    <div id="app2" class="app-page">
+    <div id="idrisPage" class="app-page">
         <button class="back-btn" onclick="showMenu()">← Ana Menü</button>
-        <div class="card bg-dark p-4 border-secondary">
-            <h4 class="text-center mb-4">İdris PDF417 Oluşturucu</h4>
-            <input type="text" id="idrisInput" class="form-control form-control-custom mb-3" placeholder="Numarayı buraya yapıştır">
-            <button onclick="makePDF()" class="btn btn-main">İDRİS BARKODU ÜRET 🚀</button>
-            <div id="pdfRes" class="text-center mt-3" style="display:none;"><div class="barcode-area"><canvas id="pdfCanvas"></canvas></div></div>
+        <div class="card bg-dark p-4 border-0">
+            <h3 class="text-center mb-4 text-white">İdis Barkod Üret</h3>
+            <div class="mb-4 text-center">
+                <label class="btn btn-outline-light w-100 p-3 mb-2">📸 Fotoğraftan Numarayı Oku <input type="file" accept="image/*" onchange="readOCR(this, 'idrisInput')" hidden></label>
+                <div id="loading_idrisInput" class="loading-text">Numara okunuyor, bekleyin...</div>
+            </div>
+            <input type="text" id="idrisInput" class="form-control form-control-custom mb-3" placeholder="Numarayı Yazın">
+            <button onclick="genPDF()" class="btn btn-action">PDF417 OLUŞTUR 🚀</button>
+            <div id="pdfOut" class="text-center mt-3" style="display:none;"><div class="barcode-area"><canvas id="pdfCanvas"></canvas></div></div>
         </div>
     </div>
 
-    <div id="app3" class="app-page">
+    <div id="readPage" class="app-page">
         <button class="back-btn" onclick="showMenu()">← Ana Menü</button>
-        <div class="card bg-dark p-4 border-secondary text-center">
-            <h4 class="mb-4 text-warning">Barkod / Karekod Tarayıcı</h4>
+        <div class="card bg-dark p-4 border-0 text-center">
+            <h3 class="mb-4 text-warning">Barkod İçeriğini Oku</h3>
             <div id="reader"></div>
-            <button onclick="startScan()" class="btn btn-outline-info w-100 mb-3">📸 Kamerayı Başlat</button>
-            <div id="scanResult" class="p-3 bg-secondary rounded mt-2" style="display:none;">
-                <p class="mb-1">Okunan Veri:</p>
-                <h3 id="scannedText" class="text-white fw-bold"></h3>
+            <button id="scanStartBtn" onclick="initScanner()" class="btn btn-info w-100 p-3 mb-3 fw-bold">📸 Arka Kamerayı Aç</button>
+            <div id="scanRes" class="p-4 bg-secondary rounded-3 mt-3" style="display:none;">
+                <p class="mb-1 text-light">Barkodun İçindeki Veri:</p>
+                <h2 id="scannedData" class="text-white fw-bold break-word"></h2>
             </div>
         </div>
     </div>
 
-    <div id="app4" class="app-page">
+    <div id="calcPage" class="app-page">
         <button class="back-btn" onclick="showMenu()">← Ana Menü</button>
-        <div class="card bg-dark p-4 border-secondary">
-            <h4 class="text-center mb-4 text-info">Çubuk Demir Hesaplayıcı</h4>
-            <div class="mb-3"><label>Çap (mm)</label><select id="cap" class="form-select form-control-lg"></select></div>
-            <div class="mb-3"><label>Boy (m)</label><select id="boy" class="form-select form-control-lg"></select></div>
-            <div class="mb-3"><label>Tonaj (Ton)</label><input type="number" id="ton" class="form-control form-control-lg"></div>
-            <button onclick="doCalc()" class="btn btn-main mt-2">HESAPLA</button>
-            <h2 id="calcRes" class="text-center mt-4 text-warning fw-bold"></h2>
+        <div class="card bg-dark p-4 border-0">
+            <h3 class="text-center mb-4 text-info">Çubuk Sayısı Hesapla</h3>
+            <div class="mb-3"><label class="mb-2">Demir Çapı (mm)</label><select id="cap" class="form-select form-select-lg bg-secondary text-white border-0"></select></div>
+            <div class="mb-3"><label class="mb-2">Boy (m)</label><select id="boy" class="form-select form-select-lg bg-secondary text-white border-0"></select></div>
+            <div class="mb-4"><label class="mb-2">Toplam Tonaj</label><input type="number" id="ton" class="form-control form-control-lg bg-secondary text-white border-0" placeholder="Örn: 2.5"></div>
+            <button onclick="calc()" class="btn btn-action">HESAPLA</button>
+            <div id="calcRes" class="text-center mt-4 p-3 rounded" style="display:none; background: #222; border: 1px dashed #ff4757;">
+                <h1 id="resVal" style="color: #ff4757; font-weight: 900;"></h1>
+                <span class="text-muted">ADET TAHMİNİ</span>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Menü Yönetimi
     function openApp(id) {
         document.getElementById('mainMenu').style.display = 'none';
         document.getElementById(id).style.display = 'block';
     }
+
     function showMenu() {
         document.querySelectorAll('.app-page').forEach(p => p.style.display = 'none');
         document.getElementById('mainMenu').style.display = 'block';
-        if(window.scanner) window.scanner.clear();
+        if(window.html5QrCode) {
+            window.html5QrCode.stop().catch(() => {});
+            document.getElementById('reader').style.display = 'none';
+        }
     }
 
-    // Listeler
+    // OCR İşlemi (Fotoğraftan Okuma)
+    function readOCR(input, targetId) {
+        const file = input.files[0];
+        if(!file) return;
+        const loader = document.getElementById('loading_' + targetId);
+        loader.style.display = 'block';
+
+        Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+            const clean = text.replace(/[^a-zA-Z0-9]/g, '').match(/[A-Z0-9]{5,}/);
+            if(clean) document.getElementById(targetId).value = clean[0];
+            loader.style.display = 'none';
+        }).catch(() => {
+            alert("Okuma başarısız, manuel girin.");
+            loader.style.display = 'none';
+        });
+    }
+
+    // Barkod İçerik (Kamera Okuyucu)
+    function initScanner() {
+        document.getElementById('reader').style.display = 'block';
+        window.html5QrCode = new Html5Qrcode("reader");
+        window.html5QrCode.start(
+            { facingMode: "environment" }, 
+            { fps: 10, qrbox: 250 },
+            (text) => {
+                document.getElementById('scannedData').innerText = text;
+                document.getElementById('scanRes').style.display = 'block';
+                window.html5QrCode.stop();
+                document.getElementById('reader').style.display = 'none';
+            }
+        ).catch(() => alert("Kamera açılamadı!"));
+    }
+
+    // Barkod Üretim Fonksiyonları
+    function genQR() {
+        let v = document.getElementById('ictasInput').value.trim();
+        if(!v) return;
+        document.getElementById('qrcode').innerHTML = "";
+        new QRCode(document.getElementById('qrcode'), { text: v, width: 220, height: 220 });
+        document.getElementById('qrOut').style.display = 'block';
+    }
+
+    function genPDF() {
+        let v = document.getElementById('idrisInput').value.trim();
+        if(!v) return;
+        bwipjs.toCanvas('pdfCanvas', { bcid: 'pdf417', text: v, scale: 3, height: 12 });
+        document.getElementById('pdfOut').style.display = 'block';
+    }
+
+    // Hesaplama
     const capS = document.getElementById('cap'); const boyS = document.getElementById('boy');
     for(let i=8;i<=20;i+=0.5) capS.options.add(new Option(i+" mm", i));
     for(let i=22;i<=50;i+=2) capS.options.add(new Option(i+" mm", i));
     for(let i=6;i<=18;i++) boyS.options.add(new Option(i+" m", i));
 
-    // QR ve PDF417 Üretme
-    function makeQR() {
-        let val = document.getElementById('ictasInput').value.trim();
-        document.getElementById('qrcode').innerHTML = "";
-        new QRCode(document.getElementById('qrcode'), { text: val, width: 220, height: 220 });
-        document.getElementById('qrRes').style.display = 'block';
-    }
-    function makePDF() {
-        let val = document.getElementById('idrisInput').value.trim();
-        bwipjs.toCanvas('pdfCanvas', { bcid: 'pdf417', text: val, scale: 3, height: 12 });
-        document.getElementById('pdfRes').style.display = 'block';
-    }
-
-    // Barkod Okuma (Scanner)
-    function startScan() {
-        window.scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-        window.scanner.render((text) => {
-            document.getElementById('scannedText').innerText = text;
-            document.getElementById('scanResult').style.display = 'block';
-            window.scanner.clear();
-        });
-    }
-
-    // Hesaplama
-    function doCalc() {
+    function calc() {
         let c = document.getElementById('cap').value, b = document.getElementById('boy').value, t = document.getElementById('ton').value;
-        let res = Math.floor((t*1000) / (b * (c*c/162.15)));
-        document.getElementById('calcRes').innerText = res + " ADET";
+        if(!t) return;
+        let r = Math.floor((t*1000) / (b * (c*c/162.15)));
+        document.getElementById('resVal').innerText = r;
+        document.getElementById('calcRes').style.display = 'block';
     }
 </script>
 </body>
